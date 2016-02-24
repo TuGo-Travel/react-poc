@@ -976,12 +976,29 @@ var data = [
 ];
 
 class App extends React.Component {
+    handleClick (e) {
+        const $place = $('.place');
+        var random = Math.floor(Math.random() * $place.length);
+        e.preventDefault();
+        $place.addClass('spin');
+        console.log("starting loop");
+        for (var i = 0; i < $place.length; i += 1) {
+            let j = 1000 + (Math.random() * $place.length * 200);
+            let k = i;
+            setTimeout(() => $($place[k]).fadeOut(200).removeClass('spin'), j);
+        }
+        setTimeout(() => $($place[random]).fadeIn(), (1000 + i * 200));
+    }
+    handleClick2 (e) {
+        e.preventDefault();
+        $('.place').fadeIn();
+    }
     render () {
         return (
             <div className="teal">
                 <Navbar brand="TuGo Where to Eat" right>
-                    <NavItem href=''>Find a Place</NavItem>
-                    <NavItem href=''>Random Place</NavItem>
+                    <NavItem href='' className="waves-effect" onClick={this.handleClick2}>Reset</NavItem>
+                    <NavItem href='' className="waves-effect" onClick={this.handleClick}>Random Place</NavItem>
                 </Navbar>
                 <PlaceList />
             </div>
@@ -993,8 +1010,12 @@ class App extends React.Component {
 class Place extends React.Component {
     render () {
         return (
-            <Col m={6} s={12} l={6} >
-                <Card className="medium" header={<CardTitle image={this.props.image_url}>{this.props.name}</CardTitle>} actions={[<a href={this.props.url} target="_blank">Go to Website</a>]}>
+            <Col m={6} s={12} l={4} className="place">
+                <Card
+                    className="medium"
+                    header={<CardTitle image={this.props.image_url}>{this.props.name}</CardTitle>}
+                    actions={[<a href={this.props.url}
+                    target="_blank">Go to Website</a>]}>
                     <img src={this.props.rating_img_url} />
                     <br/>
                     <span>{this.props.snippet_text}</span>
@@ -1006,12 +1027,13 @@ class Place extends React.Component {
 
 class PlaceList extends React.Component {
     render () {
-        var placeNodes = data.map(function (place) {
+        var placeNodes = data.map((place) => {
             return (
-                <Place name={place.name} url={place.url} snippet_text={place.snippet_text} rating_img_url={place.rating_img_url} image_url={place.image_url} key={place.id}>
+                <Place name={place.name} url={place.url} snippet_text={place.snippet_text}
+                       rating_img_url={place.rating_img_url} image_url={place.image_url} key={place.id}>
                     {place}
                 </Place>
-            )
+            );
         });
         return (
             <Row>
